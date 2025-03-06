@@ -3,7 +3,6 @@ var animations = {
     hold: "epicfight:biped/living/hold_greatsword",
     knockout: "epicfight:biped/living/kneel"
 };
-var onCombat = false;
 var knockedOut = false;
 function init(t){
     t.npc.executeCommand("data modify entity " + t.npc.getUUID() + ' efModel set value "customnpcs:customnpc"');
@@ -29,7 +28,6 @@ function init(t){
  */
 function update(t){
     t.npc.executeCommand("data modify entity " + t.npc.getUUID() + ' efModel set value "customnpcs:customnpc"');
-    t.npc.executeCommand("data modify entity " + t.npc.getUUID() + ' efModel set value "customnpcs:greatsword_user"');
     t.npc.playEFAnimation(animations.hold);
 }
 function kill(t){
@@ -41,11 +39,8 @@ function target(t){
         t.setCanceled(t)
         return;
     };
-    if(!onCombat){
-        t.npc.executeCommand("data modify entity " + t.npc.getUUID() + ' efModel set value "customnpcs:customnpc"');
-        t.npc.executeCommand("data modify entity " + t.npc.getUUID() + ' efModel set value "customnpcs:greatsword_user"');
-    }
-    onCombat = true;
+    t.npc.executeCommand("data modify entity " + t.npc.getUUID() + ' efModel set value "customnpcs:greatsword_user"');
+
 }
 function targetLost(t){
     onCombat = false
