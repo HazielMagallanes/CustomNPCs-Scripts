@@ -10,7 +10,6 @@ function init(t){
     t.npc.setName("NuTWasHere");
     t.npc.getDisplay().setTitle("The human lamb");
     t.npc.getDisplay().setSkinPlayer("NuTWasHere");
-    t.npc.executeCommand("data modify entity " + t.npc.getUUID() + ' efModel set value "customnpcs:greatsword_user"');
     t.npc.playEFAnimation(animations.hold);
 }
 
