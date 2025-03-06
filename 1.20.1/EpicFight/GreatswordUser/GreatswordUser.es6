@@ -4,8 +4,10 @@ var animations = {
     knockout: "epicfight:biped/living/kneel"
 };
 var knockedOut = false;
+var modelState = "";
 function init(t){
     t.npc.executeCommand("data modify entity " + t.npc.getUUID() + ' efModel set value "customnpcs:customnpc"');
+    modelState = "customnpc";
     t.npc.setName("NuTWasHere");
     t.npc.getDisplay().setTitle("The human lamb");
     t.npc.getDisplay().setSkinPlayer("NuTWasHere");
@@ -28,6 +30,7 @@ function init(t){
  */
 function update(t){
     t.npc.executeCommand("data modify entity " + t.npc.getUUID() + ' efModel set value "customnpcs:customnpc"');
+    modelState = "customnpc";
     t.npc.playEFAnimation(animations.hold);
 }
 function kill(t){
@@ -40,16 +43,21 @@ function target(t){
         return;
     };
     t.npc.executeCommand("data modify entity " + t.npc.getUUID() + ' efModel set value "customnpcs:greatsword_user"');
+    modelState = "greatsword_user";
 
 }
 function targetLost(t){
-    onCombat = false
     t.npc.executeCommand("data modify entity " + t.npc.getUUID() + ' efModel set value "customnpcs:customnpc"');
+    modelState = "customnpc";
 }
 
 function attack(t){
     if (knockedOut){
         t.setCanceled(true);
+    }
+    if (modelState != "greatsword_user"){
+        t.npc.executeCommand("data modify entity " + t.npc.getUUID() + ' efModel set value "customnpcs:greatsword_user"');
+        modelState = "greatsword_user";
     }
 }
 function died(t){
@@ -59,6 +67,10 @@ function died(t){
 function damaged(t){
     if (knockedOut){
         t.setCanceled(true);
+    }
+    if (modelState != "greatsword_user"){
+        t.npc.executeCommand("data modify entity " + t.npc.getUUID() + ' efModel set value "customnpcs:greatsword_user"');
+        modelState = "greatsword_user";
     }
     if(t.npc.getHealth() - t.damage <= 1){
         t.damage = 0
