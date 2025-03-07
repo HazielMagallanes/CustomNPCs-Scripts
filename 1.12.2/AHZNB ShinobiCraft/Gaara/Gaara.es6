@@ -1,4 +1,5 @@
 //Globals
+var api = Java.type("noppes.npcs.api.NpcAPI").Instance();
 //STATS
 var HP=800
 var meleeDamage=8

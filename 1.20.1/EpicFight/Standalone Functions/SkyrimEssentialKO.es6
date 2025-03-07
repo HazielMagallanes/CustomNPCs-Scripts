@@ -1,5 +1,5 @@
 //REMEMBER TO USE THIS SCRIPT WITH CNPC EPIC FIGHT INTEGRATION.
-
+var api = Java.type("noppes.npcs.api.NpcAPI").Instance();
 // Configurable animations
 var animations = {
     knockout: "epicfight:biped/living/kneel"

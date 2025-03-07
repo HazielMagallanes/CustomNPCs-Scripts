@@ -1,3 +1,5 @@
+var api = Java.type("noppes.npcs.api.NpcAPI").Instance();
+//REMEMBER TO USE THIS SCRIPT WITH CNPC EPIC FIGHT INTEGRATION.
 // Configurable animations
 var animations = {
     hold: "epicfight:biped/living/hold_greatsword",
