@@ -34,7 +34,7 @@ function tick(t){
         }
         idling = false;
     }
-    if(!t.npc.isNavigating()){
+    if(!t.npc.isNavigating() && !t.npc.isAttacking()){
         idling = true;
     }
     // Guard functionality, I strongly recommend to make the npc a Chunk Loader if you are using this with the
@@ -49,7 +49,12 @@ function tick(t){
 }
 
 function isInAttackRange(npc, range){
-    return npc.rayTraceEntities(range, false, true)[0] == npc.getAttackTarget();
+    var entitiesInFront = npc.rayTraceEntities(range, false, true);
+    var amount = entitiesInFront.length
+    for(var i = 0; i < amount; i++){
+        if(entitiesInFront[i] == npc.getAttackTarget()) return true;
+    }
+    return false;
 }
 
 function update(t){
