@@ -3,10 +3,13 @@ var api = Java.type("noppes.npcs.api.NpcAPI").Instance();
 // Configurable animations
 var animations = {
     hold: "epicfight:biped/living/hold_greatsword",
-    knockout: "epicfight:biped/living/kneel"
+    chase: "epicfight:biped/living/run_greatsword",
+    walk: "epicfight:biped/living/walk_greatsword",
+    knockout: "epicfight:biped/living/kneel",
 };
 var knockedOut = false;
 var modelState = "";
+var idling;
 function init(t){
     t.npc.executeCommand("data modify entity " + t.npc.getUUID() + ' efModel set value "customnpcs:customnpc"');
     modelState = "customnpc";
@@ -14,26 +17,44 @@ function init(t){
     t.npc.getDisplay().setTitle("The human lamb");
     t.npc.getDisplay().setSkinPlayer("NuTWasHere");
     t.npc.playEFAnimation(animations.hold);
+    t.npc.timers.forceStart(11, 40, true);
+    idling = true;
 }
 
-// Guard functionality, I strongly recommend to make the npc a Chunk Loader if you are using this with the
-// Follower role-
-/* function tick(t){
-    if(!knockedOut){
-        var entities = t.npc.world.getNearbyEntities(t.npc.getPos(), 10, 3)
-        for(var i = 0; i <entities.length;++i){
-             if (t.npc.getY() - entities[i].getY() < 3 && t.npc.getY() - entities[i].getY() > -3){
-                t.npc.setAttackTarget(entities[i])
-                return;
+function tick(t){
+    if(knockedOut) return;
+    // Animation states
+    if(t.npc.isNavigating()){
+        if(!t.npc.isAttacking()){
+            t.npc.playEFAnimation(animations.walk);
+        }else{
+            if(!isInAttackRange(t.npc, 5.0)){
+                t.npc.playEFAnimation(animations.chase);
             }
         }
-   }
+        idling = false;
+    }
+    if(!t.npc.isNavigating()){
+        idling = true;
+    }
+    // Guard functionality, I strongly recommend to make the npc a Chunk Loader if you are using this with the
+    // Follower role-
+    /* var entities = t.npc.world.getNearbyEntities(t.npc.getPos(), 10, 3)
+    for(var i = 0; i <entities.length;++i){
+            if (t.npc.getY() - entities[i].getY() < 3 && t.npc.getY() - entities[i].getY() > -3){
+            t.npc.setAttackTarget(entities[i])
+            return;
+        }
+    } */
 }
- */
+
+function isInAttackRange(npc, range){
+    return npc.rayTraceEntities(range, false, true)[0] == npc.getAttackTarget();
+}
+
 function update(t){
     t.npc.executeCommand("data modify entity " + t.npc.getUUID() + ' efModel set value "customnpcs:customnpc"');
     modelState = "customnpc";
-    t.npc.playEFAnimation(animations.hold);
 }
 function kill(t){
     t.npc.timers.forceStart(10, 20,  false)
@@ -51,6 +72,7 @@ function target(t){
 function targetLost(t){
     t.npc.executeCommand("data modify entity " + t.npc.getUUID() + ' efModel set value "customnpcs:customnpc"');
     modelState = "customnpc";
+    idling = true;
 }
 
 function attack(t){
@@ -107,6 +129,11 @@ function timer(t){
    }
    if(t.id == 10){
        t.npc.setAttackTarget(null)
+   }
+   if(t.id == 11){
+       if(idling){
+            t.npc.playEFAnimation(animations.hold);
+       }
    }
  }
 
